@@ -1,0 +1,152 @@
+<div class="multicarousel" ref:carousel>
+  <div class="previous" on:click="previous()">
+    &lt;
+  </div>
+  <div class="next" on:click="next()">
+    &gt;
+  </div>
+  <div class="items" ref:items></div>
+</div>
+
+<script>
+  let transitioning = false, timer, width, transition;
+  export default {
+    oncreate () {
+      const carousel = this.refs.carousel;
+      const items = this.get("items");
+      const count = this.get("count");
+      width = (100 / count)+"%";
+      for (let i = 0; i < items.length; i++) {
+        this.refs.items.appendChild(items[i]);
+        items[i].style.width = width;
+      }
+      for (let i = 0; i < count; i++) {
+        items[i].classList.add("active");
+      }
+      transition = "left "+(this.get("transition") / 1000)+"s";
+      this.refs.items.style.left = "0";
+      this.refs.items.style.transition = transition;
+      if (items.length <= count) {
+        // Don't animate.
+        transitioning = true;
+      } else {
+        this.start();
+      }
+    },
+    data () {
+      return {
+        delay: 1500,
+        transition: 600,
+        items: [],
+        count: 5
+      }
+    },
+    methods: {
+      next () {
+        if (transitioning) return;
+        transitioning = true;
+        const children = this.refs.items.children;
+        let foundActive = false;
+        let previous;
+        // Find the first one marked active, then the first one not active.
+        for (let i = 0; i < children.length; i++) {
+          if (!foundActive && children[i].classList.contains("active")) {
+            previous = children[i];
+            foundActive = true;
+            continue;
+          }
+          if (foundActive && !children[i].classList.contains("active")) {
+            children[i].classList.add("active");
+            break;
+          }
+        }
+        this.refs.items.style.transition = transition;
+        this.refs.items.style.left = "-"+width;
+        // Wait the transition time, then move the previous element to the end.
+        setTimeout((function() {
+          previous.classList.remove("active");
+          this.refs.items.style.transition = "";
+          this.refs.items.style.left = "0";
+          this.refs.items.appendChild(previous);
+          transitioning = false;
+        }).bind(this), this.get("transition"));
+      },
+      previous () {
+        if (transitioning) return;
+        transitioning = true;
+        const children = this.refs.items.children;
+        let previous = children[children.length - 1];
+        previous.classList.add("active");
+        this.refs.items.insertBefore(previous, children[0]);
+        this.refs.items.style.transition = "";
+        this.refs.items.style.left = "-"+width;
+        setTimeout((function(){
+          this.refs.items.style.transition = transition;
+          this.refs.items.style.left = "0";
+        }).bind(this), 0);
+        // Wait the transition time.
+        setTimeout((function() {
+          // Find the last one marked active.
+          for (let i = children.length - 1; i >= 0; i--) {
+            if (children[i].classList.contains("active")) {
+              children[i].classList.remove("active");
+              break;
+            }
+          }
+          this.refs.items.style.transition = "";
+          transitioning = false;
+        }).bind(this), this.get("transition"));
+      },
+      pause () {
+        clearInterval(timer);
+        timer = null;
+      },
+      start () {
+        if (!timer && this.get("delay") > 0) {
+          timer = setInterval(this.next.bind(this), this.get("delay"));
+        }
+      }
+    }
+  };
+</script>
+
+<style>
+  .multicarousel {
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .previous, .next {
+    position: absolute;
+    cursor: pointer;
+    width: 30px;
+    font-size: 20px;
+    font-family: "Arial Narrow", Arial, sans-serif;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    height: 100%;
+    z-index: 1;
+    transform: scaleY(3);
+  }
+  .previous {
+    left: 0;
+    justify-content: flex-end;
+  }
+  .next {
+    right: 0;
+    justify-content: flex-start;
+  }
+  .items {
+    white-space: nowrap;
+    position: relative;
+  }
+  .items > * {
+    display: none;
+  }
+  .items > *.active {
+    display: inline-block;
+  }
+</style>

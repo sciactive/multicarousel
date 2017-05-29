@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+  <title>MultiCarousel</title>
+  <style type="text/css">
+    carousel item {
+      height: 300px;
+      background: #FFF9CD;
+      border: 4px solid #00B5B0;
+      box-sizing: border-box;
+      text-align: center;
+      font-size: 30px;
+    }
+  </style>
+</head>
+<body>
+  <carousel id="MyCarousel">
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+    <item>4</item>
+    <item>5</item>
+    <item>6</item>
+    <item>7</item>
+    <item>8</item>
+  </carousel>
+  <div>
+    Methods:<br />
+    <button onclick="previous()">Previous</button>
+    <button onclick="pause()">Pause</button>
+    <button onclick="start()">Start</button>
+    <button onclick="next()">Next</button>
+  </div>
+  <script src="../lib/MultiCarousel.js"></script>
+  <script>
+    var carousel = new MultiCarousel({
+      target: document.getElementById('MyCarousel'),
+      data: {
+        delay: 2000,
+        items: Array.prototype.slice.call(document.getElementById('MyCarousel').children),
+        count: 5
+      }
+    });
+
+    function previous() {
+      carousel.previous();
+    }
+
+    function pause() {
+      carousel.pause();
+    }
+
+    function start() {
+      carousel.start();
+    }
+
+    function next() {
+      carousel.next();
+    }
+  </script>
+</body>
+</html>
