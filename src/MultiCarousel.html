@@ -1,4 +1,4 @@
-<div class="multicarousel" ref:carousel>
+<div class="multicarousel">
   <div class="previous" on:click="previous()">
     &lt;
   </div>
@@ -17,7 +17,6 @@
         __width: null,
         __transition: null
       });
-      const carousel = this.refs.carousel;
       const items = this.get("items");
       const count = this.get("count");
       this.set({__width: (100 / count)+"%"});
