@@ -12,8 +12,12 @@
       font-size: 30px;
     }
   </style>
+  <script src="../lib/MultiCarousel.js"></script>
 </head>
 <body>
+  <p>
+    Multiple Items:
+  </p>
   <carousel id="MyCarousel">
     <item>1</item>
     <item>2</item>
@@ -31,7 +35,6 @@
     <button onclick="start()">Start</button>
     <button onclick="next()">Next</button>
   </div>
-  <script src="../lib/MultiCarousel.js"></script>
   <script>
     var carousel = new MultiCarousel({
       target: document.getElementById('MyCarousel'),
@@ -41,21 +44,60 @@
         count: 5
       }
     });
-
     function previous() {
       carousel.previous();
     }
-
     function pause() {
       carousel.pause();
     }
-
     function start() {
       carousel.start();
     }
-
     function next() {
       carousel.next();
+    }
+  </script>
+
+  <p>
+    Single Item:
+  </p>
+  <carousel id="MyCarousel2">
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+    <item>4</item>
+    <item>5</item>
+    <item>6</item>
+    <item>7</item>
+    <item>8</item>
+  </carousel>
+  <div>
+    Methods:<br />
+    <button onclick="previous2()">Previous</button>
+    <button onclick="pause2()">Pause</button>
+    <button onclick="start2()">Start</button>
+    <button onclick="next2()">Next</button>
+  </div>
+  <script>
+    var carousel2 = new MultiCarousel({
+      target: document.getElementById('MyCarousel2'),
+      data: {
+        delay: 2000,
+        items: Array.prototype.slice.call(document.getElementById('MyCarousel2').children),
+        count: 1
+      }
+    });
+    function previous2() {
+      carousel2.previous();
+    }
+    function pause2() {
+      carousel2.pause();
+    }
+    function start2() {
+      carousel2.start();
+    }
+    function next2() {
+      carousel2.next();
     }
   </script>
 </body>
