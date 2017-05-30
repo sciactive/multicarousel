@@ -1,10 +1,61 @@
 <div class="multicarousel">
-  <div class="previous" on:click="previous()">
-    &lt;
-  </div>
-  <div class="next" on:click="next()">
-    &gt;
-  </div>
+  <!-- Icons are provided by http://fontawesome.io/ -->
+  {{#if controls.indexOf('previous') !== -1}}
+    <div class="previous" on:click="previous()">
+      <svg width="28" height="28" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="shadow" x="0" y="0" width="200%" height="200%">
+            <feOffset result="offOut" in="SourceAlpha" dx="0" dy="0" />
+            <feGaussianBlur result="blurOut" in="offOut" stdDeviation="10" />
+            <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+          </filter>
+        </defs>
+        <path filter="url(#shadow)" d="M1427 301l-531 531 531 531q19 19 19 45t-19 45l-166 166q-19 19-45 19t-45-19l-742-742q-19-19-19-45t19-45l742-742q19-19 45-19t45 19l166 166q19 19 19 45t-19 45z"/>
+      </svg>
+    </div>
+  {{/if}}
+  {{#if controls.indexOf('next') !== -1}}
+    <div class="next" on:click="next()">
+      <svg width="28" height="28" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="shadow" x="0" y="0" width="200%" height="200%">
+            <feOffset result="offOut" in="SourceAlpha" dx="0" dy="0" />
+            <feGaussianBlur result="blurOut" in="offOut" stdDeviation="10" />
+            <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+          </filter>
+        </defs>
+        <path filter="url(#shadow)" d="M1363 877l-742 742q-19 19-45 19t-45-19l-166-166q-19-19-19-45t19-45l531-531-531-531q-19-19-19-45t19-45l166-166q19-19 45-19t45 19l742 742q19 19 19 45t-19 45z"/>
+      </svg>
+    </div>
+  {{/if}}
+  {{#if __timer && controls.indexOf('pause') !== -1}}
+    <div class="pause" on:click="pause()">
+      <svg width="28" height="28" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="shadow" x="0" y="0" width="200%" height="200%">
+            <feOffset result="offOut" in="SourceAlpha" dx="0" dy="0" />
+            <feGaussianBlur result="blurOut" in="offOut" stdDeviation="10" />
+            <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+          </filter>
+        </defs>
+        <path filter="url(#shadow)" transform="translate(179.2 179.2) scale(0.8)" d="M1664 192v1408q0 26-19 45t-45 19h-512q-26 0-45-19t-19-45v-1408q0-26 19-45t45-19h512q26 0 45 19t19 45zm-896 0v1408q0 26-19 45t-45 19h-512q-26 0-45-19t-19-45v-1408q0-26 19-45t45-19h512q26 0 45 19t19 45z"/>
+      </svg>
+    </div>
+  {{/if}}
+  {{#if !__timer && controls.indexOf('start') !== -1}}
+    <div class="start" on:click="start()">
+      <svg width="28" height="28" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="shadow" x="0" y="0" width="200%" height="200%">
+            <feOffset result="offOut" in="SourceAlpha" dx="0" dy="0" />
+            <feGaussianBlur result="blurOut" in="offOut" stdDeviation="10" />
+            <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+          </filter>
+        </defs>
+        <path filter="url(#shadow)" transform="translate(179.2 179.2) scale(0.8)" d="M1576 927l-1328 738q-23 13-39.5 3t-16.5-36v-1472q0-26 16.5-36t39.5 3l1328 738q23 13 23 31t-23 31z"/>
+      </svg>
+    </div>
+  {{/if}}
   <div class="items" ref:items></div>
 </div>
 
@@ -42,7 +93,13 @@
         delay: 1500,
         transition: 600,
         items: [],
-        count: 5
+        count: 5,
+        controls: [
+          'previous',
+          'next',
+          'pause',
+          'start'
+        ]
       }
     },
     methods: {
@@ -120,20 +177,17 @@
     overflow: hidden;
     white-space: nowrap;
   }
-  .previous, .next {
+  .previous, .next, .pause, .start {
     position: absolute;
     cursor: pointer;
-    width: 30px;
-    font-size: 20px;
-    font-family: "Arial Narrow", Arial, sans-serif;
-    font-weight: 900;
-    color: #fff;
-    text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.4);
     display: flex;
+    z-index: 1;
+    fill: #fff;
+  }
+  .previous, .next {
+    width: 30px;
     align-items: center;
     height: 100%;
-    z-index: 1;
-    transform: scaleY(3);
   }
   .previous {
     left: 0;
@@ -142,6 +196,15 @@
   .next {
     right: 0;
     justify-content: flex-start;
+  }
+  .pause, .start {
+    width: 28px;
+    left: 50%;
+    margin-left: -14px;
+    height: 30px;
+    bottom: 0;
+    justify-content: center;
+    align-items: flex-start;
   }
   .items {
     white-space: nowrap;

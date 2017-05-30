@@ -59,7 +59,7 @@
   </script>
 
   <p>
-    Single Item:
+    Single Item, No Controls:
   </p>
   <carousel id="MyCarousel2">
     <item>1</item>
@@ -84,7 +84,8 @@
       data: {
         delay: 2000,
         items: Array.prototype.slice.call(document.getElementById('MyCarousel2').children),
-        count: 1
+        count: 1,
+        controls: []
       }
     });
     function previous2() {
