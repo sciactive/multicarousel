@@ -1,6 +1,6 @@
 {
   "name": "multicarousel",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "A multiple item JavaScript carousel UI component written with Svelte.",
   "main": "lib/MultiCarousel.js",
   "devDependencies": {
