@@ -64,9 +64,7 @@
     oncreate () {
       this.set({
         __transitioning: false,
-        __timer: null,
-        __width: null,
-        __transition: null
+        __timer: null
       });
       const items = this.get("items");
       const count = this.get("count");
@@ -131,6 +129,8 @@
           this.refs.items.appendChild(previous);
           this.set({__transitioning: false});
         }).bind(this), this.get("transition"));
+        // Restart the timer.
+        if (this.get("__timer")) this.start();
       },
       previous () {
         if (this.get("__transitioning")) return;
@@ -139,12 +139,14 @@
         let previous = children[children.length - 1];
         previous.classList.add("active");
         this.refs.items.insertBefore(previous, children[0]);
-        this.refs.items.style.transition = "";
-        this.refs.items.style.left = "-"+this.get("__width");
-        setTimeout((function(){
-          this.refs.items.style.transition = this.get("__transition");
-          this.refs.items.style.left = "0";
-        }).bind(this), 0);
+        requestAnimationFrame((function(){
+          this.refs.items.style.transition = "";
+          this.refs.items.style.left = "-"+this.get("__width");
+          setTimeout((function(){
+            this.refs.items.style.transition = this.get("__transition");
+            this.refs.items.style.left = "0";
+          }).bind(this), 0);
+        }).bind(this))
         // Wait the transition time.
         setTimeout((function() {
           // Find the last one marked active.
@@ -157,13 +159,16 @@
           this.refs.items.style.transition = "";
           this.set({__transitioning: false});
         }).bind(this), this.get("transition"));
+        // Restart the timer.
+        if (this.get("__timer")) this.start();
       },
       pause () {
         clearInterval(this.get("__timer"));
         this.set({__timer: null});
       },
       start () {
-        if (!this.get("__timer") && this.get("delay") > 0) {
+        if (this.get("delay") > 0) {
+          if (this.get("__timer")) this.pause();
           this.set({__timer: setInterval(this.next.bind(this), this.get("delay"))});
         }
       }
