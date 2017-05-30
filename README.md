@@ -1,6 +1,11 @@
 # MultiCarousel
 A multiple item JavaScript carousel UI component written with Svelte.
 
+## Installation
+Install with NPM:
+
+    npm install multicarousel
+
 ## Demo
 Check it out: https://sciactive.github.io/multicarousel/demo/
 
