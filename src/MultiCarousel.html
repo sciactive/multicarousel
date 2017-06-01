@@ -68,20 +68,20 @@
       });
       const items = this.get("items");
       const count = this.get("count");
-      this.set({__width: (100 / count)+"%"});
+      this.__width = (100 / count)+"%";
       for (let i = 0; i < items.length; i++) {
         this.refs.items.appendChild(items[i]);
-        items[i].style.width = this.get("__width");
+        items[i].style.width = this.__width;
       }
       for (let i = 0; i < count; i++) {
         items[i].classList.add("active");
       }
-      this.set({__transition: "left "+(this.get("transition") / 1000)+"s"});
+      this.__transition = "left "+(this.get("transition") / 1000)+"s";
       this.refs.items.style.left = "0";
-      this.refs.items.style.transition = this.get("__transition");
+      this.refs.items.style.transition = this.__transition;
       if (items.length <= count) {
         // Don't animate.
-        this.set({__transitioning: true});
+        this.__transitioning = true;
       } else {
         this.start();
       }
@@ -101,9 +101,33 @@
       }
     },
     methods: {
+      get __transitioning() {
+        return this.get("__transitioning");
+      },
+      set __transitioning(val) {
+        return this.set({"__transitioning": val});
+      },
+      get __width() {
+        return this.get("__width");
+      },
+      set __width(val) {
+        return this.set({"__width": val});
+      },
+      get __timer() {
+        return this.get("__timer");
+      },
+      set __timer(val) {
+        return this.set({"__timer": val});
+      },
+      get __transition() {
+        return this.get("__transition");
+      },
+      set __transition(val) {
+        return this.set({"__transition": val});
+      },
       next () {
-        if (this.get("__transitioning")) return;
-        this.set({__transitioning: true});
+        if (this.__transitioning) return;
+        this.__transitioning = true;
         const children = this.refs.items.children;
         let foundActive = false;
         let previous;
@@ -119,31 +143,31 @@
             break;
           }
         }
-        this.refs.items.style.transition = this.get("__transition");
-        this.refs.items.style.left = "-"+this.get("__width");
+        this.refs.items.style.transition = this.__transition;
+        this.refs.items.style.left = "-"+this.__width;
         // Wait the transition time, then move the previous element to the end.
         setTimeout((function() {
           previous.classList.remove("active");
           this.refs.items.style.transition = "";
           this.refs.items.style.left = "0";
           this.refs.items.appendChild(previous);
-          this.set({__transitioning: false});
+          this.__transitioning = false;
         }).bind(this), this.get("transition"));
         // Restart the timer.
-        if (this.get("__timer")) this.start();
+        if (this.__timer) this.start();
       },
       previous () {
-        if (this.get("__transitioning")) return;
-        this.set({__transitioning: true});
+        if (this.__transitioning) return;
+        this.__transitioning = true;
         const children = this.refs.items.children;
         let previous = children[children.length - 1];
         previous.classList.add("active");
         this.refs.items.insertBefore(previous, children[0]);
         requestAnimationFrame((function(){
           this.refs.items.style.transition = "";
-          this.refs.items.style.left = "-"+this.get("__width");
+          this.refs.items.style.left = "-"+this.__width;
           setTimeout((function(){
-            this.refs.items.style.transition = this.get("__transition");
+            this.refs.items.style.transition = this.__transition;
             this.refs.items.style.left = "0";
           }).bind(this), 0);
         }).bind(this))
@@ -157,19 +181,19 @@
             }
           }
           this.refs.items.style.transition = "";
-          this.set({__transitioning: false});
+          this.__transitioning = false;
         }).bind(this), this.get("transition"));
         // Restart the timer.
-        if (this.get("__timer")) this.start();
+        if (this.__timer) this.start();
       },
       pause () {
-        clearInterval(this.get("__timer"));
-        this.set({__timer: null});
+        clearInterval(this.__timer);
+        this.__timer = null;
       },
       start () {
         if (this.get("delay") > 0) {
-          if (this.get("__timer")) this.pause();
-          this.set({__timer: setInterval(this.next.bind(this), this.get("delay"))});
+          if (this.__timer) this.pause();
+          this.__timer = setInterval(this.next.bind(this), this.get("delay"));
         }
       }
     }
