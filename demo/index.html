@@ -3,8 +3,8 @@
 <head>
   <title>MultiCarousel</title>
   <style type="text/css">
-    carousel item {
-      height: 300px;
+    .multicarousel .items > * {
+      height: 200px;
       background: #FFF9CD;
       border: 4px solid #00B5B0;
       box-sizing: border-box;
@@ -15,19 +15,25 @@
   <script src="../lib/MultiCarousel.js"></script>
 </head>
 <body>
+  <header>
+    <h1>MultiCarousel</h1>
+    <p>
+      A dependency free multiple item JavaScript carousel.
+    </p>
+  </header>
   <p>
     Multiple Items:
   </p>
-  <carousel id="MyCarousel">
-    <item>1</item>
-    <item>2</item>
-    <item>3</item>
-    <item>4</item>
-    <item>5</item>
-    <item>6</item>
-    <item>7</item>
-    <item>8</item>
-  </carousel>
+  <div id="MyCarousel">
+    <div>1</div>
+    <div>2</div>
+    <div>3</div>
+    <div>4</div>
+    <div>5</div>
+    <div>6</div>
+    <div>7</div>
+    <div>8</div>
+  </div>
   <div>
     Methods:<br />
     <button onclick="previous()">Previous</button>
@@ -36,11 +42,12 @@
     <button onclick="next()">Next</button>
   </div>
   <script>
+    var container = document.getElementById('MyCarousel');
     var carousel = new MultiCarousel({
-      target: document.getElementById('MyCarousel'),
+      target: container,
       data: {
         delay: 2000,
-        items: Array.prototype.slice.call(document.getElementById('MyCarousel').children),
+        items: Array.prototype.slice.call(container.children),
         count: 5
       }
     });
@@ -61,16 +68,16 @@
   <p>
     Single Item, No Controls:
   </p>
-  <carousel id="MyCarousel2">
-    <item>1</item>
-    <item>2</item>
-    <item>3</item>
-    <item>4</item>
-    <item>5</item>
-    <item>6</item>
-    <item>7</item>
-    <item>8</item>
-  </carousel>
+  <div id="MyCarousel2">
+    <div>1</div>
+    <div>2</div>
+    <div>3</div>
+    <div>4</div>
+    <div>5</div>
+    <div>6</div>
+    <div>7</div>
+    <div>8</div>
+  </div>
   <div>
     Methods:<br />
     <button onclick="previous2()">Previous</button>
@@ -79,11 +86,12 @@
     <button onclick="next2()">Next</button>
   </div>
   <script>
+  var container2 = document.getElementById('MyCarousel2');
     var carousel2 = new MultiCarousel({
-      target: document.getElementById('MyCarousel2'),
+      target: container2,
       data: {
         delay: 2000,
-        items: Array.prototype.slice.call(document.getElementById('MyCarousel2').children),
+        items: Array.prototype.slice.call(container2.children),
         count: 1,
         controls: []
       }
