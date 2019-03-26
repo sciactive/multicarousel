@@ -4,7 +4,7 @@
   "description": "A dependency free multiple item JavaScript carousel.",
   "main": "lib/MultiCarousel.js",
   "devDependencies": {
-    "svelte": "^2.15.3",
+    "svelte": "^2.16.1",
     "svelte-cli": "^3.0.0"
   },
   "scripts": {
