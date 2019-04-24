@@ -37,7 +37,6 @@ const carousel = new MultiCarousel({
       'start'
     ]
   }
-  }
 });
 
 // Programmatic slide triggering.
