@@ -16,14 +16,16 @@ Check it out: https://sciactive.github.io/multicarousel/demo/
 
 ## Use
 
-Using it requires you to pass in an array of children DOM elements. Like this:
+Use the IIFE file in the `dist` directory or the ES module in the `lib` directory.
+
+When you instantiate, pass an array of DOM elements as the items prop. Like this:
 
 ```js
-var container = document.getElementById('MyCarousel');
-var carousel = new MultiCarousel({
+const container = document.getElementById('MyCarousel');
+const carousel = new MultiCarousel({
   target: container,
-  data: {
-    items: Array.prototype.slice.call(container.children),
+  props: {
+    items: [...container.children],
     // The rest of these are optional. Here are the defaults.
     delay: 1500, // Delay between slides.
     transition: 600, // Duration of slide transition.
@@ -49,7 +51,7 @@ carousel.start();
 
 ## Made with Svelte
 
-It's made with [Svelte](https://svelte.technology/), which means you don't need any library JS. Just use the file in the lib directory.
+It's made with [Svelte](https://svelte.dev/).
 
 ## Icon Credits
 
