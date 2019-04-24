@@ -1,6 +1,6 @@
 {
   "name": "multicarousel",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "A dependency free multiple item JavaScript carousel.",
   "main": "lib/MultiCarousel.js",
   "devDependencies": {
@@ -16,6 +16,11 @@
     "prepare": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "files": [
+    "src",
+    "lib",
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sciactive/multicarousel.git"
