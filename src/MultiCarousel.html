@@ -1,7 +1,7 @@
 <div class="multicarousel">
   <!-- Icons are provided by http://fontawesome.io/ and https://github.com/encharm/Font-Awesome-SVG-PNG -->
   {#if controls.indexOf('previous') !== -1}
-    <div class="previous" on:click="previous()">
+    <div class="previous" on:click={previous}>
       <svg width="28" height="28" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <filter id="shadow" x="0" y="0" width="200%" height="200%">
@@ -15,7 +15,7 @@
     </div>
   {/if}
   {#if controls.indexOf('next') !== -1}
-    <div class="next" on:click="next()">
+    <div class="next" on:click={next}>
       <svg width="28" height="28" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <filter id="shadow" x="0" y="0" width="200%" height="200%">
@@ -28,8 +28,8 @@
       </svg>
     </div>
   {/if}
-  {#if _timer && controls.indexOf('pause') !== -1}
-    <div class="pause" on:click="pause()">
+  {#if timer && controls.indexOf('pause') !== -1}
+    <div class="pause" on:click={pause}>
       <svg width="28" height="28" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <filter id="shadow" x="0" y="0" width="200%" height="200%">
@@ -42,8 +42,8 @@
       </svg>
     </div>
   {/if}
-  {#if !_timer && controls.indexOf('start') !== -1}
-    <div class="start" on:click="start()">
+  {#if !timer && controls.indexOf('start') !== -1}
+    <div class="start" on:click={start}>
       <svg width="28" height="28" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <filter id="shadow" x="0" y="0" width="200%" height="200%">
@@ -56,146 +56,131 @@
       </svg>
     </div>
   {/if}
-  <div class="items" ref:items></div>
+  <div class="items" bind:this={itemsElement}></div>
 </div>
 
 <script>
-  export default {
-    oncreate () {
-      this.set({
-        _transitioning: false,
-        _timer: null
-      });
+  import { onMount } from 'svelte';
 
-      const {items, count, transition} = this.get();
-      this.set({_width: (100 / count)+"%"});
-      for (let i = 0; i < items.length; i++) {
-        this.refs.items.appendChild(items[i]);
-        items[i].style.width = this.get()._width;
+  export let delay = 1500;
+  export let transition = 600;
+  export let items = [];
+  export let count = 5;
+  export let controls = [
+    'previous',
+    'next',
+    'pause',
+    'start'
+  ];
+
+  $: cssTransition = `left ${transition / 1000}s`;
+  $: width = `${100 / count}%`;
+
+  let itemsElement;
+  let transitioning = false;
+  let timer = null;
+
+  onMount(() => {
+    for (let i = 0; i < items.length; i++) {
+      itemsElement.appendChild(items[i]);
+      items[i].style.width = width;
+    }
+    for (let i = 0; i < count; i++) {
+      items[i].classList.add('active');
+    }
+    itemsElement.style.left = '0';
+    itemsElement.style.transition = cssTransition;
+    start();
+  });
+
+  export const next = () => {
+    if (transitioning) {
+      return;
+    }
+
+    transitioning = true;
+    const children = itemsElement.children;
+    let foundActive = false;
+    let previousElem;
+    // Find the first one marked active, then the first one not active.
+    for (let i = 0; i < children.length; i++) {
+      if (!foundActive && children[i].classList.contains('active')) {
+        previousElem = children[i];
+        foundActive = true;
+        continue;
       }
-      for (let i = 0; i < count; i++) {
-        items[i].classList.add("active");
-      }
-      this.set({_transition: "left "+(transition / 1000)+"s"});
-      this.refs.items.style.left = "0";
-      this.refs.items.style.transition = this.get()._transition;
-      if (items.length <= count) {
-        // Don't animate.
-        this.set({_transitioning: true});
-      } else {
-        this.start();
-      }
-    },
-    data () {
-      return {
-        delay: 1500,
-        transition: 600,
-        items: [],
-        count: 5,
-        controls: [
-          'previous',
-          'next',
-          'pause',
-          'start'
-        ]
-      }
-    },
-    methods: {
-      next () {
-        const {_transitioning, _transition, _width, transition, _timer} = this.get();
-
-        if (_transitioning) {
-          return;
-        }
-
-        this.set({_transitioning: true});
-        const children = this.refs.items.children;
-        let foundActive = false;
-        let previous;
-        // Find the first one marked active, then the first one not active.
-        for (let i = 0; i < children.length; i++) {
-          if (!foundActive && children[i].classList.contains("active")) {
-            previous = children[i];
-            foundActive = true;
-            continue;
-          }
-          if (foundActive && !children[i].classList.contains("active")) {
-            children[i].classList.add("active");
-            break;
-          }
-        }
-        this.refs.items.style.transition = _transition;
-        this.refs.items.style.left = "-"+_width;
-
-        // Wait the transition time, then move the previous element to the end.
-        setTimeout((function() {
-          previous.classList.remove("active");
-          this.refs.items.style.transition = "";
-          this.refs.items.style.left = "0";
-          this.refs.items.appendChild(previous);
-          this.set({_transitioning: false});
-        }).bind(this), transition);
-
-        // Restart the timer.
-        if (_timer) {
-          this.start();
-        }
-      },
-
-      previous () {
-        const {_transitioning, _transition, _width, transition, _timer} = this.get();
-
-        if (_transitioning) {
-          return;
-        }
-
-        this.set({_transitioning: true});
-        const children = this.refs.items.children;
-        let previous = children[children.length - 1];
-        previous.classList.add("active");
-        this.refs.items.insertBefore(previous, children[0]);
-        requestAnimationFrame((function(){
-          this.refs.items.style.transition = "";
-          this.refs.items.style.left = "-"+_width;
-          setTimeout((function(){
-            this.refs.items.style.transition = _transition;
-            this.refs.items.style.left = "0";
-          }).bind(this), 0);
-        }).bind(this));
-
-        // Wait the transition time.
-        setTimeout((function() {
-          // Find the last one marked active.
-          for (let i = children.length - 1; i >= 0; i--) {
-            if (children[i].classList.contains("active")) {
-              children[i].classList.remove("active");
-              break;
-            }
-          }
-          this.refs.items.style.transition = "";
-          this.set({_transitioning: false});
-        }).bind(this), transition);
-
-        // Restart the timer.
-        if (_timer) {
-          this.start();
-        }
-      },
-
-      pause () {
-        clearInterval(this.get()._timer);
-        this.set({_timer: null});
-      },
-
-      start () {
-        const {delay, _timer} = this.get();
-        if (delay > 0) {
-          if (_timer) this.pause();
-          this.set({_timer: setInterval(this.next.bind(this), delay)});
-        }
+      if (foundActive && !children[i].classList.contains('active')) {
+        children[i].classList.add('active');
+        break;
       }
     }
-  };
+    itemsElement.style.transition = cssTransition;
+    itemsElement.style.left = '-'+width;
+
+    // Wait the transition time, then move the previous element to the end.
+    setTimeout(() => {
+      previousElem.classList.remove('active');
+      itemsElement.style.transition = '';
+      itemsElement.style.left = '0';
+      itemsElement.appendChild(previousElem);
+      transitioning = false;
+    }, transition);
+
+    // Restart the timer.
+    if (timer) {
+      start();
+    }
+  }
+
+  export const previous = () => {
+    if (transitioning) {
+      return;
+    }
+
+    transitioning = true;
+    const children = itemsElement.children;
+    let previousElem = children[children.length - 1];
+    previousElem.classList.add('active');
+    itemsElement.insertBefore(previousElem, children[0]);
+    requestAnimationFrame(() => {
+      itemsElement.style.transition = '';
+      itemsElement.style.left = '-'+width;
+      setTimeout(() => {
+        itemsElement.style.transition = cssTransition;
+        itemsElement.style.left = '0';
+      }, 0);
+    });
+
+    // Wait the transition time.
+    setTimeout(() => {
+      // Find the last one marked active.
+      for (let i = children.length - 1; i >= 0; i--) {
+        if (children[i].classList.contains('active')) {
+          children[i].classList.remove('active');
+          break;
+        }
+      }
+      itemsElement.style.transition = '';
+      transitioning = false;
+    }, transition);
+
+    // Restart the timer.
+    if (timer) {
+      start();
+    }
+  }
+
+  export const pause = () => {
+    clearInterval(timer);
+    timer = null;
+  }
+
+  export const start = () => {
+    if (delay > 0) {
+      if (timer) pause();
+      timer = setInterval(next, delay);
+    }
+  }
 </script>
 
 <style>

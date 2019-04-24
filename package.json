@@ -1,15 +1,19 @@
 {
   "name": "multicarousel",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "A dependency free multiple item JavaScript carousel.",
   "main": "lib/MultiCarousel.js",
   "devDependencies": {
-    "svelte": "^2.16.1",
-    "svelte-cli": "^3.0.0"
+    "svelte": "^3.0.0",
+    "svelte-loader": "^2.13.3",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0"
   },
   "scripts": {
-    "build": "svelte compile --format iife src/MultiCarousel.html > lib/MultiCarousel.js",
-    "prepublish": "npm run build",
+    "compile": "node compile.js",
+    "pack": "webpack",
+    "build": "npm run compile && npm run pack",
+    "prepare": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
