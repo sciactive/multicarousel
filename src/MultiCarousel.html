@@ -56,7 +56,7 @@
       </svg>
     </div>
   {/if}
-  <div class="items" bind:this={itemsElement}></div>
+  <div class="items" bind:this={itemsElement} on:touchstart={handleTouchStart} on:touchend={handleTouchEnd} on:touchmove={handleTouchMove}></div>
 </div>
 
 <script>
@@ -181,6 +181,45 @@
       timer = setInterval(next, delay);
     }
   }
+  var touchsurface = document.getElementById('items'),
+        startX,
+        startY,
+        dist,
+        threshold = 50, //required min distance traveled to be considered swipe
+        allowedTime = 300, // maximum time allowed to travel that distance
+        elapsedTime,
+        startTime
+  export const handleSwipe = (isRightSwipe) => {
+    if (isRightSwipe) {
+      previous()
+    } else {
+      next()
+    }
+  }
+
+  export const handleTouchStart = (e) => {
+    var touchObj = e.changedTouches[0]
+    dist = 0
+    startX = e.changedTouches[0].pageX
+    startY = e.changedTouches[0].pageY
+    startTime = new Date().getTime()
+    e.preventDefault()
+  }
+
+  export const handleTouchMove = (e) => {
+    e.preventDefault();
+  }
+
+  export const handleTouchEnd = (e) => {
+    var touchobj = e.changedTouches[0]
+        dist = e.changedTouches[0].pageX - startX // get total dist traveled by finger while in contact with surface
+        elapsedTime = new Date().getTime() - startTime // get time elapsed
+        // check that elapsed time is within specified, horizontal dist traveled >= threshold, and vertical dist traveled <= 100
+        var swiperightBol = (elapsedTime <= allowedTime && dist >= threshold && Math.abs(e.changedTouches[0].pageY - startY) <= 100)
+        handleSwipe(swiperightBol)
+        e.preventDefault()
+  }
+
 </script>
 
 <style>
